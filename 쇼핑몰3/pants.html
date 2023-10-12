@@ -1,0 +1,43 @@
+<html>
+<head>
+<title>바지인 줄 알았지?</title>
+<script>
+	let today = new Date();
+
+	function clock(){
+		document.write(today.getFullYear()+" / "+today.getMonth()+" / "+today.getDate()+"<br>"+today.getHours()+" : "+today.getMinutes()+" : "+today.getSeconds()+"<br>");
+	}
+	
+</script>
+<style>
+	* {text-align: center;}
+	header{width: 100%; height: 10%; background: greenyellow;}
+	section{width: 100%; height: 80%;}
+	footer{width: 100%; height: 10%;}
+</style>
+</head>
+<body>
+	<header>
+<script>
+	clock()
+	document.write("</header>"); //시간 띄우기
+
+	//초에 따라 헤더 배경 색 바꾸기
+	if(today.getSeconds()%2 == 0)
+		document.body.style.backgroundColor = "lightpink";
+	else
+		document.body.style.backgroundColor = "lightskyblue";
+	let m = new String("자바 스크립트 스터디");
+	document.write("<hr>");
+	document.write("<section>");
+	document.write(m+"<br>"+m.length);
+
+
+
+
+</script>
+</section>
+<hr>
+<footer style="text-align: left;">만든 이: 장세연<br>어디에서: 학교</footer>
+</body>
+</html>
