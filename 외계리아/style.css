@@ -1,0 +1,282 @@
+header {width : 100%; height: 10%; background: lightcoral;}
+left {width: 33%; height: 90%; float: left; background: green;}
+section {width: 34%; height: 90%;float: left; }
+right {width: 33%; height: 90%;float: left;}
+
+@font-face {
+    font-family: 'menu_font'; /*font 이름*/
+    font-style: 'normal'; 
+    font-weight: 400; 
+    src: url('DOSIyagiBoldface.ttf');
+}
+
+@font-face {
+	font-family: 'SOYOMapleBoldTTF';
+	src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2310@1.0/SOYOMapleBoldTTF.woff2') format('woff2');
+	font-weight: 700;
+	font-style: normal;
+}
+
+form:hover {
+    cursor : url("img/장갑커서_선택.png") 6 6, auto;
+}
+
+table:hover {
+    cursor : url("img/장갑커서_선택.png") 6 6, auto;
+}
+
+
+body {
+	margin: 0;
+	font-family: 'SOYOMapleBoldTTF';
+	cursor : url("img/장갑커서.png") 15 15, default;
+}
+
+#menual {
+	background: lightblue;
+	box-sizing: border-box;
+	height: 100%;
+	border-style : solid;
+
+	padding-top: 5px;
+	padding-left: 30px;
+	padding-right: 30px;
+	padding-bottom: 5px;
+	border-width : 3px;
+}
+
+#menualText {
+	background: White;
+	box-sizing: border-box;
+	width: 100%;
+	height: 75%;
+	border-style : solid;
+	overflow: auto;
+
+	padding-top: 10px;
+	padding-left: 30px;
+	padding-right: 30px;
+	padding-bottom: 10px;
+	border-width : 3px;
+}
+
+.burger{
+	position: fixed;
+	top: 560px;
+	right: 130px;
+	z-index: 1;
+
+	width: 240; height: 120px;
+}
+
+.incredient_size {
+	width: 200; height: 100px;
+	z-index: 1;
+}
+
+
+
+
+
+
+/*배경*/
+body.background {
+	background-image: url("img/background.png");
+}
+
+/*수익 부분*/
+#money {
+	font-family: 'menu_font';
+	font-size : 25;
+	display : flex;
+ 	justify-content : center;
+  	align-items : center;
+	line-height: 30px;
+
+	width: 30%;
+	height: 40%;
+
+	background: yellow;
+
+	border-style : solid;
+	border-color: white;
+	border-width: 3px;
+
+	padding : 20px;
+
+	text-align: center;
+}
+
+#sound {
+	position: absolute;
+    top: 1px;
+    left: 64.4%;
+}
+
+#logo {
+	position: absolute;
+    top: -3.4%;
+    left: 32.5%;
+}
+
+/*시간 부분*/
+#timer {
+	font-family: 'menu_font';
+	font-size : 25;
+	display : flex;
+ 	justify-content : center;
+  	align-items : center;
+	line-height: 30px;
+
+	width: 30%;
+	height: 4%;
+
+	position: absolute;
+    top: 0px;
+    left: 67%;
+
+	background: skyblue;
+
+	border-style : solid;
+	border-color: white;
+	border-width: 3px;
+
+	padding : 20px;
+
+	text-align: center;
+}
+
+
+/*주문 박스*/
+#menu {
+	font-family: 'menu_font';
+	font-size : 18;
+	display : flex;
+ 	justify-content : center;
+  	align-items : center;
+	line-height: 30px;
+
+	background-image: url("img/talk.png");
+	background-repeat:no-repeat ;
+	background-position: 40% 100%;
+	background-size: 100% 115%;
+
+	width: 87.5%;
+	height: 20%;
+
+	margin-left: 7px;
+	margin-top: 15px;
+
+	padding : 20px;
+
+	text-align: center;
+}
+
+#talk {
+	background-image: url("img/talk.png");
+	position: absolute;
+    top: 8%;
+    left: 33%;
+}
+
+
+/*외계인 박스*/
+#alien{
+	width: 87.5%;
+	height: 43%;
+
+	margin-left: 7px;
+
+	/*border-style : solid;
+	border-color: white;
+	border-width: 3px;*/
+
+	padding : 20px;
+}
+
+/*외계인 위치;*/
+/*두손*/
+.alien_pos1{
+	/*background-image: url("alien.png");*/
+	width: 300px;
+	height: 300px;
+	position: absolute;
+	top: 39.3%;
+  	left: 42.5%;
+}
+
+/*사손*/
+.alien_pos2{
+	/*background-image: url("alien.png");*/
+	width: 300px;
+	height: 300px;
+	position: absolute;
+	top: 39.3%;
+  	left: 40%;
+}
+
+/*종*/
+.bell{
+	top: 620px;
+	width: 100; height: 100px;
+}
+
+/*종 커졌다 작아졌다*/
+.bell:hover {transform: scale(1.2, 1.2); transition-duration: 0.1s;}
+.bell {transition-duration: 0.1s;}
+
+.tong:hover {transform: scale(1.0, 1.2); transition-duration: 0.1s;}
+.tong {transition-duration: 0.1s;}
+
+.sauce:hover {transform: scale(1.1, 1.1); transition-duration: 0.1s;}
+.sauce {transition-duration: 0.1s;}
+
+
+
+
+/*테이블 박스*/
+div.table {
+	width: 87.5%;
+	height: 15%;
+	margin-left: 7px;
+	/*background: yellow;*/
+
+	border-style : solid;
+	border-color: black;
+	border-width: 3px;
+
+	padding : 20px;
+	background-image: url("img/table.png");
+	background-position: center;
+	background-size : 700px 200px;
+}
+
+
+
+
+#end {
+	display: none;
+	position: absolute;
+	top: 0px;
+  	left: 0px;
+	z-index: 100;
+
+	width: 100vw;
+	min-width: 100vw;
+	height: 100vh;
+	min-height: 100vh;
+}
+
+#endshow {
+	text-align: center;
+	display: none;
+	position: absolute;
+	top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 40px;
+	z-index: 101;
+	background: #ffffff;
+
+	border-radius: 20px;
+}

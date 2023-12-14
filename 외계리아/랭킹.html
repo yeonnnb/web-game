@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>랭킹</title>
+	<style>
+		@font-face {
+			font-family: 'menu_font'; /*font 이름*/
+    		font-style: 'normal'; 
+    		font-weight: 400; 
+    		src: url('DOSIyagiBoldface.ttf');
+		}
+		body {
+			text-align:center;
+			font-size: 30px;
+			background-color: #FBF8EF;
+			font-family: 'menu_font';
+		}
+	</style>
+</head>
+
+<body id="ranking">
+
+
+						<script>window.onload=function check(){
+						
+						
+						var rankingList = localStorage.getItem('RankingScore');
+						var rankingList2 = localStorage.getItem('RankingName');
+    
+					    
+					    var parsedRanking = JSON.parse(rankingList); //스코어
+					    var parsedRanking2 = JSON.parse(rankingList2); //네임
+					    
+					    // var sortRanking = parsedRanking.sort((a, b) => a - b);
+					    // console.log(sortRanking);
+
+					    
+						let originalIndexes = [...Array(parsedRanking.length).keys()];
+
+						let indexedNumbers = parsedRanking.map((value, index) => ({ value: Number(value), index: index }));
+
+						indexedNumbers.sort((a, b) => b.value - a.value);
+
+						let result = indexedNumbers.map(item => ({
+						  value: item.value,
+						  originalIndex: originalIndexes[item.index]
+						}));
+
+						// 숫자만 있는 배열
+						let valuesArray = result.map(item => item.value);
+
+						// 원래 인덱스만 있는 배열
+						let originalIndexesArray = result.map(item => item.originalIndex);
+
+						console.log(valuesArray);
+						console.log(originalIndexesArray); //여기에 순서 들어있다.
+
+						
+
+						// 순서대로 출력
+						let sortedNickArray = originalIndexesArray.map(index => parsedRanking2[index]);
+
+						const rank = document.getElementById("ranking");
+
+						console.log(sortedNickArray); ///이야야어이아ㅏㅇ 여기가 스코어 높은 순으로 닉네임들 정렬됨!!!!
+
+						rank.innerHTML = null; //랭킹 html 초기화
+						for(let i=0; i<sortedNickArray.length; i++){
+                			rank.innerHTML += i+1 + '위 | '  + '닉네임 : ' + sortedNickArray[i] + ' | '  + '점수 : ' + valuesArray[i] + '<hr>';
+						}
+					}</script>
+
+</body>
+</html>

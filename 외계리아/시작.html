@@ -1,0 +1,20 @@
+<!DOCTYPE>
+<html>
+<head>
+
+</head>
+<body>
+	<script>
+		var RankingScore = new Array;
+		var RankingName = new Array;
+		RankingScore.push("2362");
+		RankingName.push("햄사장");
+		var RankingScore2 = JSON.stringify(RankingScore);
+		var RankingName2 = JSON.stringify(RankingName);
+		localStorage.setItem("RankingScore", RankingScore2);
+		localStorage.setItem("RankingName", RankingName2);
+		location.href="게임소개.html";
+
+	</script>
+</body>
+</html>

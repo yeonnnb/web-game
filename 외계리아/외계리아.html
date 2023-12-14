@@ -1,0 +1,1025 @@
+<html>
+    <head>
+        <link href="style.css" type="text/css" rel="stylesheet">
+
+        <title>
+            외계리아
+        </title>
+
+        <script>
+            var name = localStorage.getItem("name");
+            const player = name;
+
+
+            // 판 가격
+            let money = 0;
+            // 번 돈
+            let total_money = 0;
+
+            // 얼마나 빡쳤는지
+            let change_num = 0;
+
+            // 손님이 있는 지 확인하는 변수
+            let customer = 0;
+            // 외계인 종류 변수
+            let type = 0;
+
+            // 재료 개수 변수
+            let ingredient_count = 0;
+            // 재료 종류 변수
+            let ingredient_type = 0;
+            // 재료 변수 배열 
+            let ingredient = new Array();
+
+            let already_pay = 0;
+
+            // 주문 배열
+            let menu_order = new Array();
+
+            // 외계인 배열
+            // 빨강
+            let alien_red = ["alien/red.png", "alien/red_so.png", "alien/red_angry.png","alien/nothing.png"];
+            // 외눈
+            let alien_one = ["alien/one.png", "alien/one_so.png", "alien/one_angry.png","alien/nothing.png"];
+            // 사손
+            let alien_four = ["alien/four.png", "alien/four_so.png", "alien/four_angry.png","alien/nothing.png"];
+            // 파랑
+            let alien_blue = ["alien/blue.png", "alien/blue_so.png", "alien/blue_angry.png","alien/nothing.png"];
+            // 외눈 + 사손
+            let alien_one_four = ["alien/one_four.png", "alien/one_four_so.png", "alien/one_four_angry.png","alien/nothing.png"];
+            // 외눈 + 빨강
+            let alien_red_one = ["alien/red_one.png", "alien/red_one_so.png", "alien/red_one_angry.png","alien/nothing.png"];
+            // 외눈 + 파랑
+            let alien_blue_one = ["alien/blue_one.png", "alien/blue_one_so.png", "alien/blue_one_angry.png","alien/nothing.png"];
+            // 사손 + 빨강
+            let alien_red_four = ["alien/red_four.png", "alien/red_four_so.png", "alien/red_four_angry.png","alien/nothing.png"];
+            // 사손 + 파랑
+            let alien_blue_four = ["alien/blue_four.png", "alien/blue_four_so.png", "alien/blue_four_angry.png","alien/nothing.png"];
+            // 보라
+            let alien_purple = ["alien/purple.png", "alien/purple_so.png", "alien/purple_angry.png","alien/nothing.png"];
+
+            // 외계인 변화 이미지 배열 인덱스 변수
+            let alien_change_num = 0;
+            var obTimeOut;
+
+
+            let num = 1; //버거 재료 쌓은 수
+            let what_in_burger = new Array(); //버거에 무슨 재료 넣었는지 저장. 이거로 맞는 버거인지 확인
+
+            //외계 단어 사전 dictionary[10][17]
+            //0 외눈박이족: 초록, 눈 1개, 손 2개
+            //1 사손이족: 초록, 눈 2개, 손 4개
+            //2 빨강이족: 빨강, 눈 2개, 손 2개
+            //3 파랑이족: 파랑, 눈 2개, 손 2개
+            //4 외눈박이족+사손이족: 초록, 눈 1개, 손 4개
+            //5 외눈박이족+빨강이족: 빨강, 눈 1개, 손 2개
+            //6 외눈박이족+파랑이족: 파랑, 눈 1개, 손 2개
+            //7 사손이족+빨강이족: 빨강, 눈 2개, 손 4개
+            //8 사손이족+파랑이족: 파랑, 눈 2개, 손 4개
+            //9 파랑이족+빨강이족: 보라, 눈 2개, 손 2개
+            let dic_base = ["치킨", "쇠고기", "버거", "햄버거", "토마토", "치즈", "케찹", "머스타드", "마요네즈", "칠리", "데리야끼", "양상추", "한 개", "두 개", "세 개", "주세요", "빼고"];
+            let dictionary = [["키친", "괴소시", "거버", "뱀거버", "모타모", "지츠", "체캅", "서므다트", "아묘제느", "릴치 소스", "레디꺄이 소스", "샹창우", "단 개", "수 개", "헤 개", "수제요", "개뽀"],
+                ["clzls", "thlrhrl", "qjrj", "goaqjrj", "xhakxh", "clwm", "zpckq", "ajtmxkem", "akdyspwm", "clfflthtm", "epfldiRlthtm", "didtkdcn", "gksro", "enro", "tpro", "wntpdy", "Qorh"],
+                ["쇠고기", "치킨", "햄버거", "버거", "치즈", "토마토", "머스타드", "케찹", "칠리 소스", "데리야끼 소스", "마요네즈", "양상추", "세 개", "한 개", "두 개", "주세요", "더해서"],
+                ["♍︎♒︎♓︎♍︎🙵♏︎■︎", "♌︎♏︎♏︎♐", "♌︎◆︎❒︎♑︎♏︎❒︎", "♒︎♋︎❍︎♌︎◆︎❒︎♑︎♏︎❒︎", "⧫□︎❍︎♋︎⧫□︎", "♍︎♒︎♏︎♏︎⬧︎♏︎",  "♏︎⧫♍︎♒︎◆︎◻",  "❍︎◆︎⬧︎⧫♋︎❒︎♎︎",  "❍︎♋︎⍓︎□︎■︎■︎♋︎♓︎⬧︎♏︎", "♍︎♒︎♓︎●︎♓︎", "❄︎♏︎❒︎♓︎⍓︎♋︎🙵♓︎", "●︎♏︎⧫⧫◆︎♍︎♏︎", "□︎■︎♏︎", "⧫⬥︎□︎", "⧫♒︎❒︎♏︎♏︎", "◻●︎♏︎♋︎⬧︎♏︎", "⬥︎♓︎⧫♒︎□︎◆︎⧫"],
+                ["zlcls", "rhlthtl", "rjqj", "qoarjqj", "ahxkah", "wlcm", "cpzkq", "tjamekxm", "dkaywpsm", "flfcl", "fpelRiwl", "tidckddn", "eks ro", "tn ro", "gp ro", "tnwpdy", "roQh"],
+                ["괴소시", "키친", "뱀거버", "거버", "지츠", "모타모", "서므다트", "체캅", "릴치 소스", "레디꺄이 소스", "아묘제느", "샹창우", "헤 개", "단 개", "수 개", "수제요", "허대서"],
+                ["🙵♓︎♍︎♒︎♏︎■", "♑︎◆︎♏︎⬧︎□︎⬧︎♓", "♑︎◆︎❒︎♌︎♏︎❒︎", "♌︎♋︎❍︎♑︎◆︎❒︎♌︎♏︎❒︎", "❍︎♋︎⧫︎□︎❍︎♋︎", "⌘︎♏︎♏︎♍︎♒︎♏︎",  "♍︎♒︎♏︎🙵♋︎◻",  "⬧︎◆︎❒︎❍︎♎︎♋︎⧫", "♋︎❍︎⍓︎□︎⌘︎♏︎■︎♏︎", "●︎♓︎●︎♍︎♒︎♓︎", "❒︎♏︎♋︎♎︎⍓︎🙵🙵⍓︎♋︎♓︎", "⬧︎⍓︎♋︎■︎♑︎♍︎♒︎♋︎■︎♑︎◆︎", "♎︎♋︎■︎", "⬧︎◆︎", "♒︎♋︎♏︎", "⬧︎◆︎♑︎♏︎⍓︎□︎", "♑︎♋︎♏︎♌︎♌︎□︎"],
+                ["thlrhrl", "clzls", "goaqjrj", "qjrj", "vlwm", "xhakxh", "ajtmxkem", "zpckq", "clffl", "eplriRL", "akdyspwm", "didtkdcn", "tpro", "gksro", "enro", "wntpdy", "ejgotj"],
+                ["♍︎●︎⌘︎●︎⬧", "⧫︎♒︎●︎❒︎♒︎❒︎●", "❑︎🙰❒︎🙰 ", "♑︎□︎♋︎❑︎🙰❒︎🙰", "⌧︎♒︎♋︎🙵⌧︎♒︎", "♍︎●︎⬥︎❍︎", "⌘︎◻︎♍︎🙵❑", "♋︎🙰⧫︎❍︎⌧︎🙵♏︎❍︎", "♋︎🙵♎︎⍓︎⬧︎◻⬥︎❍︎", "♍︎●︎♐︎♐︎●︎⧫♒︎⧫❍︎", "♏︎◻♐︎●︎♎︎♓︎☼︎●︎⧫♒︎⧫❍︎", "♎︎♓︎♎︎⧫🙵♎︎♍︎■︎", "♑︎🙵⬧︎❒︎□︎", "♏︎■︎❒︎□︎", "⧫◻❒︎□︎", "⬥︎■︎⧫◻♎︎⍓︎", "✈︎□︎❒︎♒︎"],
+                ["♌︎♏︎♏︎♐", "♍︎♒︎♓︎♍︎🙵♏︎■", "♒︎♋︎❍︎♌︎◆︎❒︎♑︎♏︎❒︎", "♌︎◆︎❒︎♑︎♏︎❒", "♍︎♒︎♏︎♏︎⬧︎♏︎", "⧫︎□︎❍︎♋︎⧫︎□︎", "❍︎◆︎⬧︎⧫♋︎❒︎♎",  "🙵♏︎⧫♍︎♒︎◆︎◻",  "♍︎♒︎♓︎●︎♓︎", "❄︎♏︎❒︎♓︎⍓︎♋︎🙵♓︎", "❍︎♋︎⍓︎□︎■︎■︎♋︎♓︎⬧︎♏︎",  "●︎♏︎⧫⧫◆︎♍︎♏︎", "⧫♒︎❒︎♏︎♏︎", "□︎■︎♏︎", "⧫♒︎❒︎♏︎♏︎", "◻●︎♏︎♋︎⬧︎♏︎", "⬥︎♓︎⧫♒︎□︎◆︎⧫"]];
+            let dic_state = [["green", "one", "two"], ["green", "two", "four"], ["red", "two", "two"], ["blue", "two", "two"], ["green", "one", "four"], ["red", "one", "two"], ["blue", "one", "two"], ["red", "two", "four"], ["blue", "two", "four"], ["purple", "two", "two"]];
+
+
+            function show_menual(){ //라디오 버튼 체크에 따른 메뉴얼 출력
+                menualsound();
+                const menual = document.getElementById("menualText");
+
+                let checked_color = null;
+                let checked_eye = null;
+                let checked_hand = null;
+                let color = document.getElementsByName("ailen_color");
+                let eye = document.getElementsByName("ailen_eye");
+                let hand = document.getElementsByName("ailen_hand");
+
+                //체크된 라디오 박스 checked_머시기 에 넣음 
+                for(let i=0; i<color.length; i++)
+                    if(color[i].checked == true) checked_color = color[i];
+                for(let i=0; i<eye.length; i++)
+                    if(eye[i].checked == true) checked_eye = eye[i];
+                for(let i=0; i<hand.length; i++)
+                    if(hand[i].checked == true) checked_hand = hand[i];
+
+                menual.innerHTML = "<dl>";
+
+                for(let i=0; i<17; i++){
+                    if(i == 0) menual.innerHTML += ("<dt>"+dic_base[i]);
+                    else menual.innerHTML += ('<dt><hr color="black" size="2px">'+dic_base[i]);
+                    menual.innerHTML += "<hr>";
+
+                    for(let k=0; k<10; k++){
+                        if((checked_color.value == "all" || checked_color.value == dic_state[k][0]) && (checked_eye.value == "all" || checked_eye.value == dic_state[k][1]) && (checked_hand.value == "all" || checked_hand.value == dic_state[k][2])) menual.innerHTML += "<dd>· "+dictionary[k][i];
+                    }
+                    menual.innerHTML += "<br>";
+                }
+
+                menual.innerHTML += "</dl>";
+            }
+
+            function makeBurger(ingredient) { //버거 재료 쌓기/초기화
+                const addBurger = document.getElementById("bg");
+
+                if(ingredient == "버리기"){
+                    addBurger.innerHTML = '<img src="img/밑빵.png" class="burger">';
+                    num = 1;
+                }
+
+                else if(ingredient == "완성"){
+                    addBurger.innerHTML += '<img src="img/위빵.png" class="burger" style="top:'+(560-(num*15))+'px; right: 150px; z-index: '+(num+1)+'; width: 200; height: 100px;">';
+                    if(alien_change_num != 0 && already_pay == 0){
+                            clearTimeout(obTimeOut);
+                            switch(type) {
+                                // 빨강
+                                case 0:
+                                   document.getElementById("red").src = alien_red[3];
+                                    break;
+
+                                // 외눈
+                                case 1:  
+                                    document.getElementById("one").src = alien_one[3];
+                                    break;
+
+                                // 사손
+                                case 2:  
+                                    document.getElementById("four").src = alien_four[3];
+                                    break;
+
+                                // 파랑
+                                case 3:  
+                                    document.getElementById("blue").src = alien_blue[3];
+                                    break;
+
+                                // 외눈 + 사손
+                                case 4:  
+                                    document.getElementById("one_four").src = alien_one_four[3];
+                                    break;
+
+                                // 외눈 + 빨강
+                                case 5:  
+                                    document.getElementById("red_one").src = alien_red_one[3];
+                                    break;
+
+                                // 외눈 + 파랑
+                                case 6:  
+                                    document.getElementById("blue_one").src = alien_blue_one[3];
+                                    break;
+
+                                // 사손 + 빨강
+                                case 7:  
+                                    document.getElementById("red_four").src = alien_red_four[3];
+                                    break;
+
+                                // 사손 + 파랑
+                                case 8:  
+                                    document.getElementById("blue_four").src = alien_blue_four[3];
+                                    break;
+
+                                // 빨강 + 파랑 = 보라
+                                default:
+                                    document.getElementById("purple").src = alien_purple[3];
+                                    break;
+                        }
+                        payment();
+                        change_num = 0;
+                        alien_change_num = 0;
+                        customer--;
+                    }
+                }
+                else{
+                    if(num == 1) addBurger.innerHTML += '<img src="img/'+ingredient+'.png" class="burger" style="top:'+(560-(num*20))+'px; z-index: '+(num+1)+';">';
+                    else addBurger.innerHTML += '<img src="img/'+ingredient+'.png" class="burger" style="top:'+(560-(num*15))+'px; z-index: '+(num+1)+';">';
+                    what_in_burger[num-1] = ingredient;
+                    num++;
+                }
+            }
+
+            function sound() {
+                let n = Math.floor(Math.random() * 10); //0~9 난수 생성
+                const audio1 = new Audio('audio/camera-shutter-171782.mp3');
+                const audio2 = new Audio('audio/closing-tape-cassette-172756.mp3');
+                const audio3 = new Audio('audio/metal-door-slam-172172.mp3');
+                if (n < 3){ 
+                    audio1.play(); 
+                }
+                else if(n < 6){
+                    audio2.play(); 
+                }
+                else{ 
+                    audio3.play(); 
+                } 
+            } 
+
+            function trashsound() { 
+                const audio = new Audio('audio/messing-around-with-garbage-container-containing-metal-66982.mp3');
+                audio.play();
+            }
+
+            function menualsound() {
+                const audio = new Audio('audio/sound-1-167181.mp3');
+                audio.play();
+            }
+
+            function lingsound() {
+                const audio = new Audio('audio/ding-126626.mp3');
+                audio.play();
+            }
+
+            function moneysound() {
+                const audio = new Audio('audio/coin-drop-39914.mp3');
+                audio.play();
+            }
+
+            function ailensound() {
+                if(customer == 1) return;
+                let n = Math.floor(Math.random() * 6); //0~5 난수 생성
+                const audio1 = new Audio('audio/voicepack-64401 (mp3cut.net).mp3');
+                const audio2 = new Audio('audio/voicepack-64401 (mp3cut.net) (1).mp3');
+                const audio3 = new Audio('audio/voicepack-64401 (mp3cut.net) (3).mp3');
+                const audio4 = new Audio('audio/voicepack-64401 (mp3cut.net) (5).mp3');
+                const audio5 = new Audio('audio/voicepack-64401 (mp3cut.net) (7).mp3');
+                const audio6 = new Audio('audio/voicepack-64401 (mp3cut.net) (8).mp3');
+
+                if (n == 0){ 
+                    audio1.play(); 
+                }
+                else if (n == 1){ 
+                    audio2.play(); 
+                }
+                else if(n == 2){
+                    audio3.play(); 
+                }
+                else if(n == 3){
+                    audio4.play(); 
+                }
+                else if(n == 4){
+                    audio5.play(); 
+                }
+                else{
+                    audio6.play(); 
+                }
+            }
+
+            function angryailensound() {
+                let n = Math.floor(Math.random() * 3); //0~2 난수 생성
+                const audio1 = new Audio('audio/voicepack-64401 (mp3cut.net) (2).mp3');
+                const audio2 = new Audio('audio/voicepack-64401 (mp3cut.net) (4).mp3');
+                const audio3 = new Audio('audio/voicepack-64401 (mp3cut.net) (6).mp3');
+
+                if (n == 0){ 
+                    audio1.play(); 
+                }
+                else if (n == 1){ 
+                    audio2.play(); 
+                }
+                else{
+                    audio3.play(); 
+                }
+            }
+
+            function endsound() {
+                const audio = new Audio('audio/metallic-door-shut-98740.mp3');
+                audio.play();
+            }
+
+            window.onload=function(){ //창 띄우자마자 함수 호출
+                show_menual();
+            }
+
+            // 외계인 입장
+            function alien_in(){
+
+                showmoney();
+
+                // 만약 손님이 없다면
+                if(customer == 0){
+                    // 외계인 종류 랜덤 결정 (0~9)
+                    type = Math.floor(Math.random() * 10);
+                    alien_change_num = 0;
+                    already_pay = 0;
+                    var alienIN = document.getElementById("alien");
+
+                    switch(type) {
+                        // 빨강
+                        case 0:  
+                            alienIN.innerHTML = '<img id = "red" src="alien/red.png" class="alien_pos1">';
+                            customer++;
+                            order();
+                            break;
+
+                        // 외눈
+                        case 1:  
+                            alienIN.innerHTML = '<img id = "one" src="alien/one.png" class="alien_pos1">';
+                            customer++;
+                            order();
+                            break;
+
+                        // 사손
+                        case 2:  
+                            alienIN.innerHTML = '<img id = "four" src="alien/four.png" class="alien_pos2">';
+                            customer++;
+                            order();
+                            break;
+
+                        // 파랑
+                        case 3:  
+                            alienIN.innerHTML = '<img id = "blue" src="alien/blue.png" class="alien_pos1">';
+                            customer++;
+                            order();
+                            break;
+
+                        // 외눈 + 사손
+                        case 4:  
+                            alienIN.innerHTML = '<img id = "one_four" src="alien/one_four.png" class="alien_pos2">';
+                            customer++;
+                            order();
+                            break;
+
+                        // 외눈 + 빨강
+                        case 5:  
+                            alienIN.innerHTML = '<img id = "red_one" src="alien/red_one.png" class="alien_pos1">';
+                            customer++;
+                            order();
+                            break;
+
+                        // 외눈 + 파랑
+                        case 6:  
+                            alienIN.innerHTML = '<img id = "blue_one" src="alien/blue_one.png" class="alien_pos1">';
+                            customer++;
+                            order();
+                            break;
+
+                        // 사손 + 빨강
+                        case 7:  
+                            alienIN.innerHTML = '<img id = "red_four" src="alien/red_four.png" class="alien_pos2">';
+                            customer++;
+                            order();
+                            break;
+
+                        // 사손 + 파랑
+                        case 8:  
+                            alienIN.innerHTML = '<img id = "blue_four" src="alien/blue_four.png" class="alien_pos2">';
+                            customer++;
+                            order();
+                            break;
+
+                        // 빨강 + 파랑 = 보라
+                        default:
+                            alienIN.innerHTML = '<img id = "purple" src="alien/purple.png" class="alien_pos1">';
+                            customer++;
+                            order();
+                            break;
+                    }
+                }
+            }
+
+            // 외계인 변화
+            function alien_change(){
+                showmoney();
+                if (alien_change_num < alien_red.length){
+                    switch(type) {
+                        // 빨강
+                        case 0:  
+                            document.getElementById("red").src = alien_red[alien_change_num];
+                            change_num++;
+  
+                            // 재료개수가 1개 이하라면 총 21초 뒤에 손님이 나감
+                            if(ingredient_count == 1) obTimeOut = setTimeout("alien_change()",7000);
+                            // 재료개수가 2 ~ 4개라면 총 36초 뒤에 손님이 나감
+                            else if(ingredient_count >= 2 && ingredient_count <= 4) obTimeOut = setTimeout("alien_change()",12000);
+                            // 재료개수가 5개라면 총 45초 뒤에 손님이 나감
+                            else if(ingredient_count == 5) obTimeOut = setTimeout("alien_change()",15000);
+                            
+                            alien_change_num++;
+                            break;
+
+                        // 외눈
+                        case 1:  
+                            document.getElementById("one").src = alien_one[alien_change_num];
+                            change_num++;
+                             
+                            // 재료개수가 1개 이하라면 총 21초 뒤에 손님이 나감
+                            if(ingredient_count == 1) obTimeOut = setTimeout("alien_change()",7000);
+                            // 재료개수가 2 ~ 4개라면 총 36초 뒤에 손님이 나감
+                            else if(ingredient_count >= 2 && ingredient_count <= 4) obTimeOut = setTimeout("alien_change()",12000);
+                            // 재료개수가 5개라면 총 45초 뒤에 손님이 나감
+                            else if(ingredient_count == 5) obTimeOut = setTimeout("alien_change()",15000);
+                            
+                            alien_change_num++;
+                            break;
+
+                        // 사손
+                        case 2:  
+                            document.getElementById("four").src = alien_four[alien_change_num];
+                            change_num++;
+                             
+                            // 재료개수가 1개 이하라면 총 21초 뒤에 손님이 나감
+                            if(ingredient_count == 1) obTimeOut = setTimeout("alien_change()",7000);
+                            // 재료개수가 2 ~ 4개라면 총 36초 뒤에 손님이 나감
+                            else if(ingredient_count >= 2 && ingredient_count <= 4) obTimeOut = setTimeout("alien_change()",12000);
+                            // 재료개수가 5개라면 총 45초 뒤에 손님이 나감
+                            else if(ingredient_count == 5) obTimeOut = setTimeout("alien_change()",15000);
+                            
+                            alien_change_num++;
+                            break;
+
+                        // 파랑
+                        case 3:  
+                            document.getElementById("blue").src = alien_blue[alien_change_num];
+                            change_num++;
+                             
+                            // 재료개수가 1개 이하라면 총 21초 뒤에 손님이 나감
+                            if(ingredient_count == 1) obTimeOut = setTimeout("alien_change()",7000);
+                            // 재료개수가 2 ~ 4개라면 총 36초 뒤에 손님이 나감
+                            else if(ingredient_count >= 2 && ingredient_count <= 4) obTimeOut = setTimeout("alien_change()",12000);
+                            // 재료개수가 5개라면 총 45초 뒤에 손님이 나감
+                            else if(ingredient_count == 5) obTimeOut = setTimeout("alien_change()",15000);
+                            
+                            alien_change_num++;
+                            break;
+
+                        // 외눈 + 사손
+                        case 4:  
+                            document.getElementById("one_four").src = alien_one_four[alien_change_num];
+                            change_num++;
+                             
+                            // 재료개수가 1개 이하라면 총 21초 뒤에 손님이 나감
+                            if(ingredient_count == 1) obTimeOut = setTimeout("alien_change()",7000);
+                            // 재료개수가 2 ~ 4개라면 총 36초 뒤에 손님이 나감
+                            else if(ingredient_count >= 2 && ingredient_count <= 4) obTimeOut = setTimeout("alien_change()",12000);
+                            // 재료개수가 5개라면 총 45초 뒤에 손님이 나감
+                            else if(ingredient_count == 5) obTimeOut = setTimeout("alien_change()",15000);
+                            
+                            alien_change_num++;
+                            break;
+
+                        // 외눈 + 빨강
+                        case 5:  
+                            document.getElementById("red_one").src = alien_red_one[alien_change_num];
+                            change_num++;
+                             
+                            // 재료개수가 1개 이하라면 총 21초 뒤에 손님이 나감
+                            if(ingredient_count == 1) obTimeOut = setTimeout("alien_change()",7000);
+                            // 재료개수가 2 ~ 4개라면 총 36초 뒤에 손님이 나감
+                            else if(ingredient_count >= 2 && ingredient_count <= 4) obTimeOut = setTimeout("alien_change()",12000);
+                            // 재료개수가 5개라면 총 45초 뒤에 손님이 나감
+                            else if(ingredient_count == 5) obTimeOut = setTimeout("alien_change()",15000);
+                            
+                            alien_change_num++;
+                            break;
+
+                        // 외눈 + 파랑
+                        case 6:  
+                            document.getElementById("blue_one").src = alien_blue_one[alien_change_num];
+                            change_num++;
+                             
+                            // 재료개수가 1개 이하라면 총 21초 뒤에 손님이 나감
+                            if(ingredient_count == 1) obTimeOut = setTimeout("alien_change()",7000);
+                            // 재료개수가 2 ~ 4개라면 총 36초 뒤에 손님이 나감
+                            else if(ingredient_count >= 2 && ingredient_count <= 4) obTimeOut = setTimeout("alien_change()",12000);
+                            // 재료개수가 5개라면 총 45초 뒤에 손님이 나감
+                            else if(ingredient_count == 5) obTimeOut = setTimeout("alien_change()",15000);
+                            
+                            alien_change_num++;
+                            break;
+
+                        // 사손 + 빨강
+                        case 7:  
+                            document.getElementById("red_four").src = alien_red_four[alien_change_num];
+                            change_num++;
+                             
+                            // 재료개수가 1개 이하라면 총 21초 뒤에 손님이 나감
+                            if(ingredient_count == 1) obTimeOut = setTimeout("alien_change()",7000);
+                            // 재료개수가 2 ~ 4개라면 총 36초 뒤에 손님이 나감
+                            else if(ingredient_count >= 2 && ingredient_count <= 4) obTimeOut = setTimeout("alien_change()",12000);
+                            // 재료개수가 5개라면 총 45초 뒤에 손님이 나감
+                            else if(ingredient_count == 5) obTimeOut = setTimeout("alien_change()",15000);
+                            
+                            alien_change_num++;
+                            break;
+
+                        // 사손 + 파랑
+                        case 8:  
+                            document.getElementById("blue_four").src = alien_blue_four[alien_change_num];
+                            change_num++;
+                            
+                            // 재료개수가 1개 이하라면 총 21초 뒤에 손님이 나감
+                            if(ingredient_count == 1) obTimeOut = setTimeout("alien_change()",7000);
+                            // 재료개수가 2 ~ 4개라면 총 36초 뒤에 손님이 나감
+                            else if(ingredient_count >= 2 && ingredient_count <= 4) obTimeOut = setTimeout("alien_change()",12000);
+                            // 재료개수가 5개라면 총 45초 뒤에 손님이 나감
+                            else if(ingredient_count == 5) obTimeOut = setTimeout("alien_change()",15000);
+                            
+                            alien_change_num++;
+                            break;
+
+                        // 빨강 + 파랑 = 보라
+                        default:
+                            document.getElementById("purple").src = alien_purple[alien_change_num];
+                            change_num++;
+                             
+                            // 재료개수가 1개 이하라면 총 21초 뒤에 손님이 나감
+                            if(ingredient_count == 1) obTimeOut = setTimeout("alien_change()",7000);
+                            // 재료개수가 2 ~ 4개라면 총 36초 뒤에 손님이 나감
+                            else if(ingredient_count >= 2 && ingredient_count <= 4) obTimeOut = setTimeout("alien_change()",12000);
+                            // 재료개수가 5개라면 총 45초 뒤에 손님이 나감
+                            else if(ingredient_count == 5) obTimeOut = setTimeout("alien_change()",15000);
+                            
+                            alien_change_num++;
+                            break;
+                        }
+                    }
+
+                
+
+                if (alien_change_num == alien_red.length) {
+                    clearTimeout(obTimeOut);
+                    const out = document.getElementById("menu");
+                    out.innerHTML = "(외계인 손님이 화를 내며 가게를 나갔다.)"
+                    change_num = 0;
+                    alien_change_num = 0;
+                    already_pay++;
+                    customer--;
+                    angryailensound();
+                    total_money -= 100;
+                    showmoney();
+
+                } 
+            }
+
+            // 주문
+            function order(){
+                let i = 0;
+
+                // 재료 개수 랜덤 결정(1~5) / (5 - 1 + 1) + 1 -> (max - min + 1) + min
+                ingredient_count = Math.floor(Math.random() * (5 - 1 + 1)) + 1;
+
+                // 재료 변수 배열 초기화
+                ingredient.length = 0;
+
+                // 주문 배열 초기화
+                menu_order.length = 0;
+
+                // 주문판 초기화
+                const order_clear = document.getElementById("menu");
+                order_clear.innerHTML = menu_order;
+
+                // 주문 채워넣기 (기본) (정답 확인용)
+                for(i = 0; i < ingredient_count; i++){
+                    // 재료 종류 랜덤 생성(1~10) / (10 - 1 + 1) + 1 -> (max - min + 1) + min
+                    ingredient_type = Math.floor(Math.random() * (10 - 1 + 1)) + 1;
+
+                    switch(ingredient_type) {
+                        // 토마토
+                        case 1:  
+                            ingredient.push("토마토");
+                            break;
+                        // 양상추
+                        case 2:  
+                            ingredient.push("양상추");
+                            break;
+                        // 케찹
+                        case 3:  
+                            ingredient.push("케찹");
+                            break;
+                        // 머스타드
+                        case 4:  
+                            ingredient.push("머스타드");
+                            break;
+                        // 마요네즈
+                        case 5:  
+                            ingredient.push("마요네즈");
+                            break;
+                        // 칠리
+                        case 6:  
+                            ingredient.push("칠리");
+                            break;
+                        // 데리야끼
+                        case 7:  
+                            ingredient.push("데리야끼");
+                            break;
+                        // 치즈
+                        case 8:  
+                            ingredient.push("치즈");
+                            break;
+                        // 쇠고기
+                        case 9:  
+                            ingredient.push("쇠고기");
+                            break;
+                        // 치킨 (case 10)
+                        default:  
+                            ingredient.push("치킨");
+                            break;
+                    }
+                }
+
+                // 주문 채워넣기 (각 언어로 번역)
+                for(i = 0; i < ingredient_count + 1; i++){
+                    // 외계인 종류로 구분하여 각 언어로 배열에 주문 저장
+                    switch(type) {
+                        // 빨강
+                        case 0:  
+                            if(ingredient[i] == "토마토") menu_order.push("치즈");
+                            else if(ingredient[i] == "양상추") menu_order.push("양상추");
+                            else if(ingredient[i] == "케찹") menu_order.push("머스타드");
+                            else if(ingredient[i] == "머스타드") menu_order.push("케찹");
+                            else if(ingredient[i] == "마요네즈") menu_order.push("칠리");
+                            else if(ingredient[i] == "칠리") menu_order.push("데리야끼");
+                            else if(ingredient[i] == "데리야끼") menu_order.push("마요네즈");
+                            else if(ingredient[i] == "치즈") menu_order.push("토마토");
+                            else if(ingredient[i] == "쇠고기") menu_order.push("치킨");
+                            else if(ingredient[i] == "치킨") menu_order.push("쇠고기");
+                            else if(i == ingredient_count) menu_order.push("주세요.");
+                            break;
+
+                        // 외눈
+                        case 1:  
+                            if(ingredient[i] == "토마토") menu_order.push("모타모");
+                            else if(ingredient[i] == "양상추") menu_order.push("샹창우");
+                            else if(ingredient[i] == "케찹") menu_order.push("체캅");
+                            else if(ingredient[i] == "머스타드") menu_order.push("서므다트");
+                            else if(ingredient[i] == "마요네즈") menu_order.push("아묘제느");
+                            else if(ingredient[i] == "칠리") menu_order.push("릴치 소스");
+                            else if(ingredient[i] == "데리야끼") menu_order.push("레디꺄이 소스");
+                            else if(ingredient[i] == "치즈") menu_order.push("지츠");
+                            else if(ingredient[i] == "쇠고기") menu_order.push("괴소시");
+                            else if(ingredient[i] == "치킨") menu_order.push("키친");
+                            else if(i == ingredient_count) menu_order.push("수제요.");
+                            break;
+
+                        // 사손
+                        case 2:  
+                            if(ingredient[i] == "토마토") menu_order.push("xhakxh");
+                            else if(ingredient[i] == "양상추") menu_order.push("didtkdcn");
+                            else if(ingredient[i] == "케찹") menu_order.push("zpckq");
+                            else if(ingredient[i] == "머스타드") menu_order.push("ajtmxkem");
+                            else if(ingredient[i] == "마요네즈") menu_order.push("akdyspwm");
+                            else if(ingredient[i] == "칠리") menu_order.push("clfflthtm");
+                            else if(ingredient[i] == "데리야끼") menu_order.push("epfldiRlthtm");
+                            else if(ingredient[i] == "치즈") menu_order.push("clwm");
+                            else if(ingredient[i] == "쇠고기") menu_order.push("thlrhrl");
+                            else if(ingredient[i] == "치킨") menu_order.push("clzls");
+                            else if(i == ingredient_count) menu_order.push("wntpdy.");
+                            break;
+
+                        // 파랑
+                        case 3:  
+                            if(ingredient[i] == "토마토") menu_order.push("⧫︎□︎❍︎♋︎⧫︎□︎");
+                            else if(ingredient[i] == "양상추") menu_order.push("●︎♏︎⧫︎⧫︎◆︎♍︎♏︎");
+                            else if(ingredient[i] == "케찹") menu_order.push("♏︎⧫♍︎♒︎◆︎◻");
+                            else if(ingredient[i] == "머스타드") menu_order.push("❍︎◆︎⬧︎⧫♋︎❒︎♎︎");
+                            else if(ingredient[i] == "마요네즈") menu_order.push("❍︎♋︎⍓︎□︎■︎■︎♋︎♓︎⬧︎♏︎");
+                            else if(ingredient[i] == "칠리") menu_order.push("♍︎♒︎♓︎●︎♓︎");
+                            else if(ingredient[i] == "데리야끼") menu_order.push("❄︎♏︎❒︎♓︎⍓︎♋︎🙵♓︎");
+                            else if(ingredient[i] == "치즈") menu_order.push("♍︎♒︎♏︎♏︎⬧︎♏︎");
+                            else if(ingredient[i] == "쇠고기") menu_order.push("♌︎♏︎♏︎♐︎");
+                            else if(ingredient[i] == "치킨") menu_order.push("♍︎♒︎♓︎♍︎🙵♏︎■︎");
+                            else if(i == ingredient_count) menu_order.push("◻︎●︎♏︎♋︎⬧︎♏︎.");
+                            break;
+
+                        // 외눈 + 사손
+                        case 4:  
+                            if(ingredient[i] == "토마토") menu_order.push("ahxkah");
+                            else if(ingredient[i] == "양상추") menu_order.push("tidckddn");
+                            else if(ingredient[i] == "케찹") menu_order.push("cpzkq");
+                            else if(ingredient[i] == "머스타드") menu_order.push("tjamekxm");
+                            else if(ingredient[i] == "마요네즈") menu_order.push("dkaywpsm");
+                            else if(ingredient[i] == "칠리") menu_order.push("flfcl");
+                            else if(ingredient[i] == "데리야끼") menu_order.push("fpelRiwl");
+                            else if(ingredient[i] == "치즈") menu_order.push("wlcm");
+                            else if(ingredient[i] == "쇠고기") menu_order.push("rhlthtl");
+                            else if(ingredient[i] == "치킨") menu_order.push("zlcls");
+                            else if(i == ingredient_count) menu_order.push("tnwpdy.");
+                            break;
+
+                        // 외눈 + 빨강
+                        case 5:  
+                            if(ingredient[i] == "토마토") menu_order.push("지츠");
+                            else if(ingredient[i] == "양상추") menu_order.push("샹창우");
+                            else if(ingredient[i] == "케찹") menu_order.push("서므다트");
+                            else if(ingredient[i] == "머스타드") menu_order.push("체캅");
+                            else if(ingredient[i] == "마요네즈") menu_order.push("릴치 소스");
+                            else if(ingredient[i] == "칠리") menu_order.push("레디꺄이 소스");
+                            else if(ingredient[i] == "데리야끼") menu_order.push("아묘제느");
+                            else if(ingredient[i] == "치즈") menu_order.push("모타모");
+                            else if(ingredient[i] == "쇠고기") menu_order.push("키친");
+                            else if(ingredient[i] == "치킨") menu_order.push("괴소시");
+                            else if(i == ingredient_count) menu_order.push("수제요.");
+                            break;
+
+                        // 외눈 + 파랑
+                        case 6:  
+                            if(ingredient[i] == "토마토") menu_order.push("❍︎♋︎⧫︎□︎❍︎♋︎");
+                            else if(ingredient[i] == "양상추") menu_order.push("⬧︎⍓︎♋︎■︎♑︎♍︎♒︎♋︎■︎♑︎◆︎");
+                            else if(ingredient[i] == "케찹") menu_order.push("♍︎♒︎♏︎🙵♋︎◻");
+                            else if(ingredient[i] == "머스타드") menu_order.push("⬧︎◆︎❒︎❍︎♎︎♋︎⧫");
+                            else if(ingredient[i] == "마요네즈") menu_order.push("♋︎❍︎⍓︎□︎⌘︎♏︎■︎♏︎");
+                            else if(ingredient[i] == "칠리") menu_order.push("●︎♓︎●︎♍︎♒︎♓︎");
+                            else if(ingredient[i] == "데리야끼") menu_order.push("❒︎♏︎♋︎♎︎⍓︎🙵🙵⍓︎♋︎♓︎");
+                            else if(ingredient[i] == "치즈") menu_order.push("⌘︎♏︎♏︎♍︎♒︎♏︎");
+                            else if(ingredient[i] == "쇠고기") menu_order.push("♑︎◆︎♏︎⬧︎□︎⬧︎♓︎");
+                            else if(ingredient[i] == "치킨") menu_order.push("🙵♓︎♍︎♒︎♏︎■︎");
+                            else if(i == ingredient_count) menu_order.push("⬧︎◆︎♑︎♏︎⍓︎□︎.");
+                            break;
+
+                        // 사손 + 빨강
+                        case 7:  
+                            if(ingredient[i] == "토마토") menu_order.push("vlwm");
+                            else if(ingredient[i] == "양상추") menu_order.push("xhakxh");
+                            else if(ingredient[i] == "케찹") menu_order.push("ajtmxkem");
+                            else if(ingredient[i] == "머스타드") menu_order.push("zpckq");
+                            else if(ingredient[i] == "마요네즈") menu_order.push("clffl");
+                            else if(ingredient[i] == "칠리") menu_order.push("eplriRL");
+                            else if(ingredient[i] == "데리야끼") menu_order.push("akdyspwm");
+                            else if(ingredient[i] == "치즈") menu_order.push("xhakxh");
+                            else if(ingredient[i] == "쇠고기") menu_order.push("clzls");
+                            else if(ingredient[i] == "치킨") menu_order.push("thlrhrl");
+                            else if(i == ingredient_count) menu_order.push("wntpdy.");
+                            break;
+
+                        // 사손 + 파랑
+                        case 8:  
+                           if(ingredient[i] == "토마토") menu_order.push("⌧︎♒︎♋︎🙵⌧︎♒︎");
+                            else if(ingredient[i] == "양상추") menu_order.push("♎︎♓︎♎︎⧫︎🙵♎︎♍︎■︎");
+                            else if(ingredient[i] == "케찹") menu_order.push("⌘︎◻︎♍︎🙵❑");
+                            else if(ingredient[i] == "머스타드") menu_order.push("♋︎🙰⧫︎❍︎⌧︎🙵♏︎❍︎");
+                            else if(ingredient[i] == "마요네즈") menu_order.push("♋︎🙵♎︎⍓︎⬧︎◻⬥︎❍︎");
+                            else if(ingredient[i] == "칠리") menu_order.push("♍︎●︎♐︎♐︎●︎⧫♒︎⧫❍︎");
+                            else if(ingredient[i] == "데리야끼") menu_order.push("♏︎◻♐︎●︎♎︎♓︎☼︎●︎⧫♒︎⧫❍︎");
+                            else if(ingredient[i] == "치즈") menu_order.push("♍︎●︎⬥︎❍︎");
+                            else if(ingredient[i] == "쇠고기") menu_order.push("⧫︎♒︎●︎❒︎♒︎❒︎●︎");
+                            else if(ingredient[i] == "치킨") menu_order.push("♍︎●︎⌘︎●︎⬧︎");
+                            else if(i == ingredient_count) menu_order.push("⬥︎■︎⧫︎◻︎♎︎⍓︎.");
+                            break;
+
+                        // 빨강 + 파랑 = 보라
+                        default:
+                            if(ingredient[i] == "토마토") menu_order.push("♍︎♒︎♏︎♏︎⬧︎♏︎");
+                            else if(ingredient[i] == "양상추") menu_order.push("●︎♏︎⧫︎⧫︎◆︎♍︎♏︎");
+                            else if(ingredient[i] == "케찹") menu_order.push("❍︎◆︎⬧︎⧫♋︎❒︎♎");
+                            else if(ingredient[i] == "머스타드") menu_order.push("🙵♏︎⧫♍︎♒︎◆︎◻");
+                            else if(ingredient[i] == "마요네즈") menu_order.push("♍︎♒︎♓︎●︎♓︎");
+                            else if(ingredient[i] == "칠리") menu_order.push("❄︎♏︎❒︎♓︎⍓︎♋︎🙵♓︎");
+                            else if(ingredient[i] == "데리야끼") menu_order.push("❍︎♋︎⍓︎□︎■︎■︎♋︎♓︎⬧︎♏︎");
+                            else if(ingredient[i] == "치즈") menu_order.push("⧫︎□︎❍︎♋︎⧫︎□︎");
+                            else if(ingredient[i] == "쇠고기") menu_order.push("♍︎♒︎♓︎♍︎🙵♏︎■︎");
+                            else if(ingredient[i] == "치킨") menu_order.push("♌︎♏︎♏︎♐︎");
+                            else if(i == ingredient_count) menu_order.push("◻︎●︎♏︎♋︎⬧︎♏︎.");
+                            break;
+                    }
+                }
+
+                // 주문 띄우기
+                const order_up = document.getElementById("menu");
+
+                for(i = 0; i < ingredient_count + 1; i++) {
+                    // 마지막이라면 , 없이 주세요. 까지 출력
+                    if (i == ingredient_count) order_up.innerHTML = order_up.innerHTML + menu_order[i];
+                    // 2개씩 출력 
+                    else if (i % 2 == 0 && i != 0) order_up.innerHTML = order_up.innerHTML + '<br>' + menu_order[i] + ", ";
+                    // 메뉴 출력
+                    else order_up.innerHTML = order_up.innerHTML + menu_order[i] + ", ";
+                }
+
+                alien_change();
+            }
+
+            // 수익 보여주는 함수
+            function showmoney() {
+                const show_money = document.getElementById("money");
+                show_money.innerHTML = "수익 : " + total_money + "원";
+            }
+
+            // 돈 계산
+            // 재료 개수에 따라 가격 책정, 1개당 100원
+            function payment() {
+                let i = 0, j = 0;
+                // 재료 개수당 100원
+                money = ingredient.length * 100;
+
+                // 번 돈 계산 후 출력
+                for(i = 0; i < ingredient.length; i++){
+                    if(ingredient[i] != what_in_burger[i]){
+                        // 매우 불만족
+                        const minus = document.getElementById("menu");
+                        minus.innerHTML = "손님이 매우 불만이 많은 상태로 가게를 나갔다." + "<br>" + "돈을 벌지 못했다.";
+                        angryailensound();
+                        makeBurger("버리기");
+                        already_pay++;
+                        total_money -= 100;
+                        showmoney();
+                        // 틀리면 바로 나가리
+                        return;
+                    }
+                }
+                
+                // 매우 만족
+                if (change_num == 1){
+                    const plus = document.getElementById("menu");
+                    plus.innerHTML = "손님이 매우 만족하며 가게를 나갔다." + "<br>" + money + "원을 벌었다.";
+                }
+                // 만족
+                else if (change_num == 2){
+                    money *= 0.75
+                    const plus = document.getElementById("menu");
+                    plus.innerHTML = "손님이 적당히 만족하며 가게를 나갔다." + "<br>" + money + "원을 벌었다.";
+                }
+                // 불만족
+                else if (change_num == 3){
+                    money *= 0.5
+                    const plus = document.getElementById("menu");
+                    plus.innerHTML = "손님이 불만족한 상태로 가게를 나갔다." + "<br>" + money + "원을 벌었다.";
+                }
+                already_pay++;
+                total_money += money;
+                showmoney();
+                moneysound();
+                makeBurger("버리기");
+            } 
+
+            let t_time = 180000;
+            let min = 3;
+            let sec = 60;
+
+            
+            // 타이머
+            function time() {
+                playtime = setInterval(function(){
+                    t_time = t_time - 1000; //1초씩 줄어듦
+                    min = Math.floor( t_time / (60 * 1000) ); 
+
+                    if(sec > 0){ 
+                        sec = sec-1;
+                        timer.innerHTML = "남은 영업시간" + " | " + min + " : " + sec;       
+                    }
+                    if(sec == 0){
+                        sec = 60;
+                        timer.innerHTML = "남은 영업시간" + " | " +  min-- + " : " + "00";
+                    }
+                }, 1000);  
+            }
+
+            let start = 0;
+
+            function letsgo(){
+                location.href="게임소개.html";
+
+            }
+
+            function timestart() {
+                if(start == 0){
+                    start++;
+
+                    time();
+
+                    setTimeout(function(){
+                        clearInterval(playtime);
+
+                        document.getElementById('audio').pause(); //브금 끄기
+                        clearTimeout(obTimeOut);
+                        const shut = document.getElementById('end');
+                        const shutpop = document.getElementById('endshow');
+                        
+
+                        //var ScoreArray = new Array;
+                        var ScoreArray = JSON.parse(localStorage.getItem("RankingScore"));
+                        ScoreArray.push(String(total_money));
+                        var scoreArray2 = JSON.stringify(ScoreArray);
+                        localStorage.setItem("RankingScore", scoreArray2);
+                        
+                        // var a = JSON.parse(localStorage.getItem("RankingName"));
+                        // var b = JSON.parse(localStorage.getItem("RankingScore"));
+
+                        // var hap = [];
+                        // for(let i=1; i<=a.length; i++){
+                        //     hap.push([a[i], b[i]]);
+                        // }
+
+                        
+
+                        endshow.innerHTML = '타임 아웃!<br><br>'+player+'님의<br>총 수익: ' + total_money + '원<br><br><br><button type="button" style="width: 100px; height: 40px;" onclick="letsgo()">끝내기</button>';
+                        shut.style.display = "block";
+                        shutpop.style.display = "block";
+                        endsound();
+                    }, 180000);
+                }
+            }
+            
+        </script>
+
+
+    </head>
+
+    <body class="background">
+        <div id="endshow"></div>
+        <img src='img/shutter-498712_1280.jpg' id='end'>
+        <audio id="audio" src="audio/digital-love-127441.mp3" loop onloadstart="this.volume=0.2"></audio>
+
+        <header>
+            <!-- 시간 돈 등등 -->
+            <div id="money"> 
+                <script>
+                    const show_money = document.getElementById("money");
+                    show_money.innerHTML = "수익 : " + total_money + "원";
+                </script>
+            </div> 
+
+
+            <div id="logo">
+                <img src="img/logo.png" width="500" height="120" id="logo">
+            </div>
+
+            <div id="sound">
+                <img src="img/Mplay.png" width="36" height="36" onclick="document.getElementById('audio').play()">
+                <br>
+                <img src="img/Mstop.png" width="36" height="36" onclick="document.getElementById('audio').pause()">
+            </div>
+
+            <div id="timer">
+                <script>
+                    const timer = document.getElementById('timer');
+                    timer.innerHTML = "남은 영업시간" + " | " + min + " : " + '00';
+                </script>
+            </div>
+        </header>
+
+        <left>
+            <!-- 메뉴얼 -->
+            <div id="menual">
+                <h3 style="text-align: center;">외계인 언어 메뉴얼</h3>
+                <hr>
+                <form  >
+                    몸 색깔&nbsp;&nbsp;&nbsp;|
+                    <label ><input type="radio" name="ailen_color" value="all" onclick="show_menual()" checked> 전체</label>
+                    <label><input type="radio" name="ailen_color" value="green" onclick="show_menual()"> 초록</label>
+                    <label><input type="radio" name="ailen_color" value="blue" onclick="show_menual()"> 파랑</label>
+                    <label><input type="radio" name="ailen_color" value="red" onclick="show_menual()"> 빨강</label>
+                    <label><input type="radio" name="ailen_color" value="purple" onclick="show_menual()"> 보라</label>
+                    <br>
+                    눈 개수&nbsp;&nbsp;&nbsp;|
+                    <label><input type="radio" name="ailen_eye" value="all" onclick="show_menual()" checked> 전체</label>
+                    <label><input type="radio" name="ailen_eye" value="two" onclick="show_menual()"> 2개</label>
+                    <label><input type="radio" name="ailen_eye" value="one" onclick="show_menual()"> 1개</label>
+                    <br>
+                    손 개수&nbsp;&nbsp;&nbsp;|
+                    <label><input type="radio" name="ailen_hand" value="all" onclick="show_menual()" checked> 전체</label>
+                    <label><input type="radio" name="ailen_hand" value="two" onclick="show_menual()"> 2개</label>
+                    <label><input type="radio" name="ailen_hand" value="four" onclick="show_menual()"> 4개</label>
+                </form>
+                <div id="menualText">
+                </div>
+            </div>
+        </left>
+
+        <section>
+            <!-- 주문 -->
+            <div id="menu">
+                <!-- <img src="img/talk.png" width="520" height="230" id="talk"> -->
+            </div>
+
+            <!-- 외계인 -->
+            <div id="alien"></div>
+
+            <!-- 테이블 -->
+            <div class="table">
+                <img src="img/bell.png" class="bell" onclick='timestart(), lingsound(), ailensound(), alien_in()'>
+            </div>  
+        </section>
+
+        <right>
+            <!-- 햄버거 제작 -->
+            <img src="img/햄버거 제조 배경.png" style="width: 506px; height: 665px;">
+            <img src="img/접시.png" style="position: fixed; width: 250px; height: 160px; bottom: 47px; right: 130px;">
+            <img src="img/치킨통.png" title="치킨"class="tong" style="position: fixed; width: 194.1px; height: 106.5px; top: 89px; left: 1030px;" onclick='sound(), makeBurger("치킨")'>
+            <img src="img/치즈통.png" title="치즈"class="tong" style="position: fixed; width: 169.7px; height: 105.9px; top: 223px; left: 1030px;" onclick='sound(), makeBurger("치즈")'>
+
+            <img src="img/쇠고기통.png" title="쇠고기"class="tong" style="position: fixed; width: 169.7px; height: 105.9px; top: 89px; right: 2px;" onclick='sound(), makeBurger("쇠고기")'>
+            <img src="img/토마토통.png" title="토마토"class="tong" style="position: fixed; width: 169.7px; height: 105.9px; top: 223px; right: 2px;" onclick='sound(), makeBurger("토마토")'>
+            <img src="img/양상추통.png" title="양상추"class="tong" style="position: fixed; width: 183.7px; height: 129.5px; top: 335px; right: 2px;" onclick='sound(), makeBurger("양상추")'>
+            
+            
+            <img src="img/머스타드통.png" title="머스타드"class="sauce" style="position: fixed; width: 41.7px; height: 87.6px; top: 391px; left: 1033px;" onclick='sound(), makeBurger("머스타드")'>
+            <img src="img/케찹통.png" title="케찹"class="sauce" style="position: fixed; width: 41.7px; height: 87.6px;top: 391px; left: 1085px;" onclick='sound(), makeBurger("케찹")'>
+            <img src="img/마요네즈통.png" title="마요네즈"class="sauce" style="position: fixed; width: 47.3px; height: 86.3px; top: 393px; left: 1134px;" onclick='sound(), makeBurger("마요네즈")'>
+            
+            <img src="img/데리야끼 소스통.png" title="데리야끼"class="sauce" style="position: fixed; width: 33.4px; height: 79.1px; top: 497px; left: 1047px;" onclick='sound(), makeBurger("데리야끼")'>
+            <img src="img/칠리 소스통.png" title="칠리"class="sauce" style="position: fixed; width: 52.1px; height: 78.4px; top: 498px; left: 1106px;" onclick='sound(), makeBurger("칠리")'>
+
+            <div id="bg">
+                <img src="img/밑빵.png" class="burger">
+            </div>
+            <button type="button" style="width: 150px; height: 50px; position: fixed; top: 670px; right: 300px;" onclick='sound(), makeBurger("완성")'>완성</button>
+            <button type="button" style="width: 150px; height: 50px; position: fixed; top: 670px; right: 50px;" onclick='trashsound(), makeBurger("버리기")'>버리기</button>
+        </right>  
+    </body>
+
+</html>
